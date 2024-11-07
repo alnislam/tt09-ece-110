@@ -35,8 +35,8 @@ module tb ();
     $dumpvars(0, tb);
   end
 
-  // Instantiate tt_um_example
-  tt_um_example uut (
+  // Instantiate tt_um_anislam
+  tt_um_anislam uut (
     .ui_in (ui_in),
     .weights (weights),
     .bias (bias),
