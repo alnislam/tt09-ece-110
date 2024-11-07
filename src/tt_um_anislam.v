@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_example (
+module tt_um_anislam (
     input  wire [7:0] ui_in,    // Dedicated inputs (current)
     input  wire [7:0] weights,  // Weight input
     input  wire [7:0] bias,     // Bias input
