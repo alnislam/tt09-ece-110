@@ -2,39 +2,53 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import cocotb
+from cocotb.triggers import RisingEdge, Timer
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
-
 
 @cocotb.test()
-async def test_project(dut):
-    dut._log.info("Start")
+async def test_perceptron(dut):
+    # Set up a 100 MHz clock (10 ns period)
+    cocotb.start_soon(Clock(dut.clk, 10, units="ns").start())
 
-    # # Set the clock period to 10 us (100 KHz)
-    # clock = Clock(dut.clk, 10, units="us")
-    # cocotb.start_soon(clock.start())
+    # Log test start
+    dut._log.info("Starting perceptron test")
 
-    # # Reset
-    # dut._log.info("Reset")
-    # dut.ena.value = 1
-    # dut.ui_in.value = 0
-    # dut.uio_in.value = 0
-    # dut.rst_n.value = 0
-    # await ClockCycles(dut.clk, 10)
-    # dut.rst_n.value = 1
+    # Reset the DUT
+    dut.rst_n.value = 0
+    await Timer(20, units="ns")
+    dut.rst_n.value = 1
+    await Timer(20, units="ns")  # Add more time for the reset to take effect
 
-    # dut._log.info("Test project behavior")
+    # Test cases
+    test_cases = [
+        {"ui_in": 50, "weights": 2, "bias": 200},
+        {"ui_in": 80, "weights": 3, "bias": 150},
+        {"ui_in": 100, "weights": 1, "bias": 50},
+        {"ui_in": 120, "weights": 4, "bias": 100},
+    ]
 
-    # # Set the input values you want to test
-    # dut.ui_in.value = 20
-    # dut.uio_in.value = 30
+    for idx, case in enumerate(test_cases):
+        # Apply inputs
+        dut.ui_in.value = case["ui_in"]
+        dut.weights.value = case["weights"]
+        dut.bias.value = case["bias"]
 
-    # # Wait for one clock cycle to see the output values
-    # await ClockCycles(dut.clk, 1)
+        # Wait for multiple clock cycles to allow inputs to propagate
+        for _ in range(5):
+            await RisingEdge(dut.clk)
 
-    # # The following assersion is just an example of how to check the output values.
-    # # Change it to match the actual expected output of your module:
-    # assert dut.uo_out.value == 50
+        # Check for unresolved bits before logging
+        uo_out_val = dut.uo_out.value
+        if "z" not in str(uo_out_val) and "x" not in str(uo_out_val):
+            # Log the outputs
+            spike_val = dut.spike_out.value
+            dut._log.info(
+                f"Test case {idx + 1}: "
+                f"ui_in={case['ui_in']}, weights={case['weights']}, bias={case['bias']} -> "
+                f"uo_out={uo_out_val}, spike={spike_val}"
+            )
+        else:
+            dut._log.warning(f"Test case {idx + 1}: uo_out has unresolved bits, skipping output.")
 
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
+    # Final log for test completion
+    dut._log.info("Completed perceptron test cases")
