@@ -29,14 +29,15 @@ module tt_um_anislam (
     // Instantiate the lif neuron module and connect outputs
     lif lif1 (
         .current(ui_in),
-        .weight(8'd128),  // Use a fixed weight (or make it adjustable if needed)
+        .weight(8'd128),      // Use a fixed weight
         .clk(clk),
         .reset_n(rst_n),
-        .spike(spike)
+        .spike(spike),
+        .state(state)         // Connect state to the output in lif
     );
 
-    // Assign the spike to uio_out[7] and optionally state to uo_out
-    assign uo_out = state;        // Assign state to dedicated output `uo_out`
-    assign uio_out[7] = spike;    // Place spike on `uio_out[7]`
+    // Assign the state to `uo_out` and spike to `uio_out[7]`
+    assign uo_out = state;
+    assign uio_out[7] = spike;
 
 endmodule

@@ -5,12 +5,12 @@ module lif (
     input wire [7:0]    weight,    // Weight input
     input wire          clk,
     input wire          reset_n,
-    output wire         spike      // Spike output
+    output wire         spike,     // Spike output
+    output reg [7:0]    state      // State of neuron
 );
 
     wire [7:0] weighted_input;
     wire [7:0] next_state;
-    reg [7:0] state; 
     reg [7:0] threshold = 8'd200;  // Threshold for spiking
     reg [7:0] bias = 8'd200;       // Fixed bias value
 
