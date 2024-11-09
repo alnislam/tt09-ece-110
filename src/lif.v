@@ -22,8 +22,10 @@ module lif (
 
     // State and spike update on clock edge
     always @(posedge clk or negedge reset_n) begin
-        if (!reset_n | spike) begin
+        if (!reset_n) begin
             state <= 0;
+        end else if (state >= threshold) begin
+            state <= 0;  // Reset state on spiking threshold
         end else begin
             state <= next_state;
         end
