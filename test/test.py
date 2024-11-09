@@ -17,38 +17,29 @@ async def test_perceptron(dut):
     dut.rst_n.value = 0
     await Timer(20, units="ns")
     dut.rst_n.value = 1
-    await Timer(20, units="ns")  # Add more time for the reset to take effect
+    await Timer(20, units="ns")  # Allow time for reset
 
-    # Test cases
+    # Test cases with only `ui_in`
     test_cases = [
-        {"ui_in": 50, "weights": 2, "bias": 200},
-        {"ui_in": 80, "weights": 3, "bias": 150},
-        {"ui_in": 100, "weights": 1, "bias": 50},
-        {"ui_in": 120, "weights": 4, "bias": 100},
+        {"ui_in": 50},
+        {"ui_in": 80},
+        {"ui_in": 100},
+        {"ui_in": 120},
     ]
 
     for idx, case in enumerate(test_cases):
-        # Apply inputs
+        # Apply input
         dut.ui_in.value = case["ui_in"]
-        dut.weights.value = case["weights"]
-        dut.bias.value = case["bias"]
 
         # Wait for multiple clock cycles to allow inputs to propagate
         for _ in range(5):
             await RisingEdge(dut.clk)
 
-        # Check for unresolved bits before logging
+        # Log the outputs
         uo_out_val = dut.uo_out.value
-        if "z" not in str(uo_out_val) and "x" not in str(uo_out_val):
-            # Log the outputs
-            spike_val = dut.spike_out.value
-            dut._log.info(
-                f"Test case {idx + 1}: "
-                f"ui_in={case['ui_in']}, weights={case['weights']}, bias={case['bias']} -> "
-                f"uo_out={uo_out_val}, spike={spike_val}"
-            )
-        else:
-            dut._log.warning(f"Test case {idx + 1}: uo_out has unresolved bits, skipping output.")
+        dut._log.info(
+            f"Test case {idx + 1}: ui_in={case['ui_in']} -> uo_out={uo_out_val}"
+        )
 
     # Final log for test completion
     dut._log.info("Completed perceptron test cases")

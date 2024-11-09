@@ -11,10 +11,8 @@ module tb ();
   reg rst_n;
 
   // Inputs to the top module
-  reg [7:0] ui_in;    // Current input
-  reg [7:0] weights;  // Weights input
-  reg [7:0] bias;     // Bias input
-  wire [7:0] uo_out;  // Combined state and spike output
+  reg [7:0] ui_in;       // Current input
+  wire [7:0] uo_out;     // Output from the module
   
   // Initialize clock and reset
   initial begin
@@ -35,11 +33,9 @@ module tb ();
     $dumpvars(0, tb);
   end
 
-  // Instantiate tt_um_anislam
+  // Instantiate tt_um_anislam with only existing ports
   tt_um_anislam uut (
     .ui_in (ui_in),
-    .weights (weights),
-    .bias (bias),
     .uo_out (uo_out),
     .clk (clk),
     .rst_n (rst_n)
