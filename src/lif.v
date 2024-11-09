@@ -22,7 +22,7 @@ module lif (
 
     // State and spike update on clock edge
     always @(posedge clk or negedge reset_n) begin
-        if (!reset_n) begin
+        if (!reset_n | spike) begin
             state <= 0;
         end else begin
             state <= next_state;
