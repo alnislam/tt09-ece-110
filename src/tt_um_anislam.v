@@ -17,14 +17,15 @@ module tt_um_anislam (
 );
 
     wire spike1, spike2;
-    wire [7:0] state1, state2;
+    reg [7:0] state1, state2;
 
     // All output pins must be assigned. Assign unused uio_out bits to 0.
-    assign uio_out[5:0] = 0;
+    assign uio_out[7:0] = 0;
     assign uio_oe = 8'h00;  // Set all bits to 0 for input enable
     
     // List all unused inputs to prevent warnings
-    wire _unused = &{ena, uio_out, 1'b0};
+    //wire _unused = &{ena, uio_out, 1'b0};
+    wire _unused = &{ena, 1'b0};
 
     // Instantiate the first lif neuron module
     lif lif1 (
@@ -48,6 +49,6 @@ module tt_um_anislam (
 
     // Assign the state of the last neuron to `uo_out` and spike to `uio_out[7]`
     assign uo_out = {spike2, spike1 , state2[7:2]}; //concatinating the most recent spike with the previous spike and how close the second neuron is to spiking
-    assign uio_out[7:0] = 8'b0;
+    //assign uio_out[7:0] = 8'b0;
 
 endmodule

@@ -10,10 +10,12 @@ module tb ();
   reg clk;
   reg rst_n;
 
-  // Inputs to the top module
-  reg [7:0] ui_in;       // Current input
-  wire [7:0] uo_out;     // Output from the module
-  
+  // Inputs and outputs for the top module
+  reg [7:0] ui_in;         // Dedicated inputs
+  reg [7:0] uio_in;        // IOs: Input path
+  wire [7:0] uo_out;       // Dedicated outputs
+  wire [7:0] uio_out;      // IOs: Output path
+
   // Initialize clock and reset
   initial begin
     clk = 0;
@@ -33,12 +35,14 @@ module tb ();
     $dumpvars(0, tb);
   end
 
-  // Instantiate tt_um_anislam with only existing ports
+  // Instantiate tt_um_anislam module
   tt_um_anislam uut (
-    .ui_in (ui_in),
-    .uo_out (uo_out),
-    .clk (clk),
-    .rst_n (rst_n)
+    .ui_in(ui_in),
+    .uo_out(uo_out),
+    .uio_in(uio_in),
+    .uio_out(uio_out),
+    .clk(clk),
+    .rst_n(rst_n)
   );
 
 endmodule
