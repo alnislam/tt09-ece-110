@@ -1,6 +1,6 @@
 # Tiny Tapeout project information
 project:
-  title:        "simple leaky integrate and fire neuron"      # Project title
+  title:        "Leaky integrate and fire spiking neural network"      # Project title
   author:       "Aliyaa Islam"      # Your name
   discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
   description:  "simulates a lif neuron"      # One line description of what your project does
